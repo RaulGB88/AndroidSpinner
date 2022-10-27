@@ -6,13 +6,15 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.practicas.pmdm.pmdm_t4a8_granel_raul.model.Operator;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private Spinner spinner;
-    private List<User> usersList = null;
+    private List<Operator> operatorList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,31 +22,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Init Components
-        spinner = findViewById(R.id.spinner);
-        usersList = getUsersList();
-        ArrayAdapter<User> adapter = null;
+        spinner = findViewById(R.id.sp1);
+        operatorList = getOperatorsList();
+        ArrayAdapter<Operator> adapter = null;
 
-        if (null == usersList) {
-            usersList = new ArrayList<>();
-            User user = new User();
-            user.setId(0);
-            user.setName("No existen datos para mostrar.");
+        if (null == operatorList) {
+            operatorList = new ArrayList<>();
+            Operator operator = new Operator();
+            operator.setId(0);
+            operator.setName("No existen datos para mostrar.");
 
-            usersList.add(user);
+            operatorList.add(operator);
         }
-        adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, usersList);
+        adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, operatorList);
         spinner.setAdapter(adapter);
     }
 
-    public List<User> getUsersList() {
-        ArrayList<User> usersList = new ArrayList<User>();
-        usersList.add(new User(1, "Raul", "Garcia", "Blanco"));
-        usersList.add(new User(1, "Maria", "Paton", "Melero"));
-        usersList.add(new User(1, "Gemma", "Black", "Manez"));
-        usersList.add(new User(1, "Toni", "Gomez", "Tirant"));
-        usersList.add(new User(1, "Laura", "Gerona", "Bezos"));
+    public List<Operator> getOperatorsList() {
 
-        return usersList;
+        ArrayList<Operator> operatorsList = new ArrayList<>();
+        operatorsList.add(new Operator(1, "sumar", "+"));
+        operatorsList.add(new Operator(2, "restar", "-"));
+        operatorsList.add(new Operator(3, "multiplicar", "*"));
+        operatorsList.add(new Operator(4, "dividir", "/"));
+
+        return operatorsList;
     }
 
 }
