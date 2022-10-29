@@ -10,12 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.practicas.pmdm.pmdm_t4a8_granel_raul.dao.OperatorDao;
 import com.practicas.pmdm.pmdm_t4a8_granel_raul.model.Operator;
+import com.practicas.pmdm.pmdm_t4a8_granel_raul.utility.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private OperatorDao operatorDao = new OperatorDao();
+    private Utility utility = new Utility();
 
     private Spinner spinner;
     ArrayAdapter<Operator> adapter = null;
@@ -36,12 +42,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
 
         // Get the Spinner element selected.
-        item = getSelectedSpinnerItem(spinner);
+        item = utility.getSelectedSpinnerItem(spinner);
     }
 
     public void init() {
         spinner = findViewById(R.id.sp1);
-        operatorList = getOperatorsList();
+        operatorList = operatorDao.getOperatorsList();
 
         // Get EditText elements.
         et1 = (EditText) this.findViewById(R.id.et1);
@@ -62,33 +68,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public String getSelectedSpinnerItem(Spinner spinner) {
-        String item = "";
-        item = spinner.getSelectedItem().toString();
-        return item;
-    }
+    public String operate(String num1, String num2, String item) {
 
-    public Integer checkNumber(String number) {
-        return Integer.parseInt(number);
-    }
-
-    public Integer operate(String num1, String num2, String item) {
-
+        String etResult = "";
         int result = 0;
 
         int number1 = 0;
         int number2 = 0;
 
-        // Check and get the EditText Integers.
-        if (et1 != null && !"".equalsIgnoreCase(et1.getText().toString())) {
-            number1 = checkNumber(et1.getText().toString());
-        }
-        if (et2 != null && !"".equalsIgnoreCase(et2.getText().toString())) {
-            number2 = checkNumber(et2.getText().toString());
+        boolean isNumber1 = utility.checkNumber(num1);
+        boolean isNumber2 = utility.checkNumber(num2);
+
+
+        // Check Integer numbers and get message.
+        if (!isNumber1 && !isNumber2) {
+            etResult = "Los números introducidos, no son un números. \n";
+        } else {
+            if (!isNumber1) {
+                etResult = "El primer número introducido, no es un número. \n";
+            } else {
+                number1 = Integer.parseInt(et1.getText().toString());
+            }
+            if (!isNumber2) {
+                etResult = "El segundo número introducido, no es un número.";
+            } else {
+                number2 = Integer.parseInt(et2.getText().toString());
+            }
         }
 
-        if (et1 != null & et2 != null && !"".equalsIgnoreCase(et1.getText().toString()) && !"".equalsIgnoreCase(et2.getText().toString())
-                && item != null & !"".equalsIgnoreCase(item)) {
+        // Operate
+        if (isNumber1 && isNumber2 && item != null & !"".equalsIgnoreCase(item)) {
             switch (item) {
                 case "SUMAR":
                     result = number1 + number2;
@@ -103,24 +112,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     result = number1 / number2;
                     break;
             }
+            etResult = Integer.toString(result);
         }
-
-        return result;
-    }
-
-    public List<Operator> getOperatorsList() {
-
-        ArrayList<Operator> operatorsList = new ArrayList<>();
-        operatorsList.add(new Operator(1, "SUMAR", "+"));
-        operatorsList.add(new Operator(2, "RESTAR", "-"));
-        operatorsList.add(new Operator(3, "MULTIPLICAR", "*"));
-        operatorsList.add(new Operator(4, "DIVIDIR", "/"));
-
-        return operatorsList;
+        return etResult;
     }
 
     public void buttonEvent(View view) {
-        item = getSelectedSpinnerItem(spinner);
+        item = utility.getSelectedSpinnerItem(spinner);
         String res = operate(et1.getText().toString(), et2.getText().toString(), item).toString();
         et3.setText(res);
     }
